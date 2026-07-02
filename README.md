@@ -6,12 +6,12 @@
 
 Estimate embedding job notes for batch size, retry, and cost cap gaps. It solves review drift by turning plain-text plans into deterministic CI-friendly findings.
 
-## Input Contract 41
+## Input Contract
 
 Accepts embedding job plan. The reader supports plain text, JSON, JSONL, and CSV so the
 tool can fit into scripts, CI jobs, and review exports.
 
-## CLI Walkthrough 41
+## CLI Walkthrough
 
 ```bash
 python -m pip install -e ".[dev]"
@@ -20,7 +20,7 @@ embedding-cost-plan examples/sample.txt --json --fail-on medium
 python -m embedding_cost_plan --help
 ```
 
-## Rule Surface 41
+## Rule Surface
 
 | Rule | Severity | Meaning |
 |---|---:|---|
@@ -28,7 +28,7 @@ python -m embedding_cost_plan --help
 | `missing-cost-cap` | medium | cost cap missing |
 | `retry-forever` | low | retry is unbounded |
 
-## Validation Notes 41
+## Validation Notes
 
 ```bash
 ruff check .
