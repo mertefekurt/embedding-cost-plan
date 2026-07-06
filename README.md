@@ -1,48 +1,45 @@
-# embedding-cost-plan
+# Embedding Cost Plan
 
-> Estimate embedding job notes for batch size, retry, and cost cap gaps.
+![Embedding Cost Plan cover](assets/readme-cover.svg)
 
-## Quick start Overview
+> Estimate embedding job notes for batch size, retry, and cost cap gaps
 
-Estimate embedding job notes for batch size, retry, and cost cap gaps. It solves review drift by turning plain-text plans into deterministic CI-friendly findings.
+![stack](https://img.shields.io/badge/stack-Python-b45309?style=flat-square) ![python](https://img.shields.io/badge/python-3.11-be185d?style=flat-square) ![license](https://img.shields.io/badge/license-MIT-4b5563?style=flat-square) ![ci](https://img.shields.io/badge/ci-GitHub%20Actions-2563eb?style=flat-square)
 
-## Input Contract
+## At a glance
 
-Accepts embedding job plan. The reader supports plain text, JSON, JSONL, and CSV so the
-tool can fit into scripts, CI jobs, and review exports.
+| Area | Detail |
+| --- | --- |
+| Focus | embedding systems |
+| Command | `embedding-cost-plan` |
+| Formats | text, JSON, JSONL, CSV |
+| Output | Markdown table or JSON |
 
-## CLI Walkthrough
+## What it checks
+
+| Rule | Severity | What it catches |
+| --- | --- | --- |
+| `huge-documents` | high | large embedding job detected |
+| `missing-cost-cap` | medium | cost cap missing |
+| `retry-forever` | low | retry is unbounded |
+
+## Try it locally
 
 ```bash
 python -m pip install -e ".[dev]"
 embedding-cost-plan examples/sample.txt
 embedding-cost-plan examples/sample.txt --json --fail-on medium
-python -m embedding_cost_plan --help
 ```
 
-## Rule Surface
+## Notes from the code
 
-| Rule | Severity | Meaning |
-|---|---:|---|
-| `huge-documents` | high | large embedding job detected |
-| `missing-cost-cap` | medium | cost cap missing |
-| `retry-forever` | low | retry is unbounded |
+`rules.py` keeps the project policy explicit, while `core.py` handles parsing and report rendering. The CLI stays thin on purpose so the checks are easy to test.
 
-## Validation Notes
+## Verify
 
 ```bash
+python -m pip install -e ".[dev]"
 ruff check .
 pytest
 python -m embedding_cost_plan --help
 ```
-
-Example risky input:
-
-```text
-documents 5000000 batch_size unknown cost_cap none retry forever
-```
-
-Architecture: `cli.py` handles arguments, `core.py` reads and evaluates records, and
-`rules.py` keeps the project-specific policy explicit.
-
-License: MIT.
