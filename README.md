@@ -1,44 +1,36 @@
 # Embedding Cost Plan
 
+> A small command-line review pass for embedding systems.
+
 ![Embedding Cost Plan cover](assets/readme-cover.svg)
 
-> Estimate embedding job notes for batch size, retry, and cost cap gaps
+Estimate embedding job notes for batch size, retry, and cost cap gaps. In practice it is a narrow guardrail for model evaluation, traces, retrieval, and prompt review: one command, a concrete report, and very little ceremony.
 
-![stack](https://img.shields.io/badge/stack-Python-b45309?style=flat-square) ![python](https://img.shields.io/badge/python-3.11-be185d?style=flat-square) ![license](https://img.shields.io/badge/license-MIT-4b5563?style=flat-square) ![ci](https://img.shields.io/badge/ci-GitHub%20Actions-2563eb?style=flat-square)
+## Signals in plain English
 
-## At a glance
+- `huge-documents` (high): large embedding job detected. Fix: estimate cost before run.
+- `missing-cost-cap` (medium): cost cap missing. Fix: set budget limit.
+- `retry-forever` (low): retry is unbounded. Fix: use bounded retries.
 
-| Area | Detail |
-| --- | --- |
-| Focus | embedding systems |
-| Command | `embedding-cost-plan` |
-| Formats | text, JSON, JSONL, CSV |
-| Output | Markdown table or JSON |
+## Input and report
 
-## What it checks
+The reader accepts text, JSON, JSONL, or CSV. The default report is readable in a terminal or pull request; `--json` keeps the same findings available to automation.
 
-| Rule | Severity | What it catches |
-| --- | --- | --- |
-| `huge-documents` | high | large embedding job detected |
-| `missing-cost-cap` | medium | cost cap missing |
-| `retry-forever` | low | retry is unbounded |
-
-## Try it locally
+## Demo
 
 ```bash
+git clone https://github.com/mertefekurt/embedding-cost-plan.git
+cd embedding-cost-plan
+python -m venv .venv
+source .venv/bin/activate
 python -m pip install -e ".[dev]"
 embedding-cost-plan examples/sample.txt
-embedding-cost-plan examples/sample.txt --json --fail-on medium
+embedding-cost-plan examples/sample.txt --json
 ```
 
-## Notes from the code
-
-`rules.py` keeps the project policy explicit, while `core.py` handles parsing and report rendering. The CLI stays thin on purpose so the checks are easy to test.
-
-## Verify
+## Sanity checks
 
 ```bash
-python -m pip install -e ".[dev]"
 ruff check .
 pytest
 python -m embedding_cost_plan --help
